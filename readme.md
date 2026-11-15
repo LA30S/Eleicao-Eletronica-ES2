@@ -17,3 +17,5 @@ Compilar e rodar: docker compose up -d --build
 
 Se der ruim com alguma imagem, troca a versão e da **docker compose build --no-cache** para atualizar
 
+14/11/2026: Banco de dados, controllers e router da api montados. Falta implementar de fato os métodos
+
