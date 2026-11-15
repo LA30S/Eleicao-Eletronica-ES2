@@ -2,6 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const candidatoRoutes = require('./routes/candidatoRoutes');
+const chefeRoutes = require('./routes/chefeRoutes');
+const eleicaoRoutes = require('./routes/eleicaoRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const votoRoutes = require('./routes/votoRoutes');
+
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -15,5 +23,11 @@ mongoose.connect(MONGO_URI)
 app.get('/api', (req, res) => {
   res.json({ message: 'API funcionando!' });
 });
+
+app.use('/api/candidatos  ', candidatoRoutes);
+app.use('/api/chefe', chefeRoutes);
+app.use('/api/eleicao', eleicaoRoutes);
+app.use('/api/usuario', usuarioRoutes);
+app.use('/api/voto', votoRoutes);
 //eu peguei essa config genérica, podemos mudar depois as portas e o link se necessário
 app.listen(3000, () => console.log('Backend rodando na porta 3000'));
