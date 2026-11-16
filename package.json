@@ -1,0 +1,7 @@
+{
+  "name": "EleicaoEletronicaES2",
+  "workspaces": [
+    "EleicaoEletronica",
+    "backend"
+  ]
+}

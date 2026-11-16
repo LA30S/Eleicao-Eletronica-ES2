@@ -1,0 +1,11 @@
+FROM node:24-alpine
+WORKDIR /app
+# Instala o node alpine e o ionic ono conainter
+RUN npm install -g @ionic/cli
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 8100
+
+#eu peguei essa config genérica, podemos mudar depois as portas se necessário
+CMD ["ionic", "serve", "--external", "--port", "8100"]

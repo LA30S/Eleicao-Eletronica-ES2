@@ -1,0 +1,7 @@
+{
+  "name": "EleicaoEletronica",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

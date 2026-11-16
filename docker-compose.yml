@@ -1,0 +1,37 @@
+
+
+services:
+  # Mongo
+  database:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # API do Express (a gente depois tem que usar o swagger para detalhar)
+  backend:
+    build: ./backend
+    container_name: express_api
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/meubanco
+    depends_on:
+      - database
+
+  # Frontend do Ionic
+  frontend:
+    build: ./EleicaoEletronica
+    container_name: ionic_frontend
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./EleicaoEletronica:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
