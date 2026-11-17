@@ -8,6 +8,8 @@ const eleicaoRoutes = require('./routes/eleicaoRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const votoRoutes = require('./routes/votoRoutes');
 
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -22,11 +24,10 @@ app.get('/api', (req, res) => {
   res.json({ message: 'API funcionando!' });
 });
 
-app.use('/auth', usuarioRoutes);            // Atende http://localhost:3000/auth/login (Frontend)
-app.use('/api/candidatos', candidatoRoutes); // Removidos os espaços extras
+app.use('/api/candidatos  ', candidatoRoutes);
 app.use('/api/chefe', chefeRoutes);
 app.use('/api/eleicao', eleicaoRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/voto', votoRoutes);
-
+//eu peguei essa config genérica, podemos mudar depois as portas e o link se necessário
 app.listen(3000, () => console.log('Backend rodando na porta 3000'));
