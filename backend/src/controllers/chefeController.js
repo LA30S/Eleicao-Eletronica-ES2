@@ -1,13 +1,18 @@
+const bcrypt = require('bcryptjs');
 const Chefe = require('../models/Chefe');
 
-//implementação dummy de cadastrar um chefe de seção
 exports.cadastrarChefe = async (req, res) => {
   try {
-    const novoChefe = new Chefe(req.body);
+    const { nome, login, senha } = req.body;
+    const senhaHash = await bcrypt.hash(senha, 10);
+
+    const novoChefe = new Chefe({ nome, login, senha: senhaHash });
     await novoChefe.save();
-    res.status(201).json(novoChefe);
+
+    const resposta = novoChefe.toObject();
+    delete resposta.senha;
+    return res.status(201).json(resposta);
   } catch (error) {
-    res.status(400).json({ erro: error.message });
+    return res.status(400).json({ erro: error.message });
   }
 };
-

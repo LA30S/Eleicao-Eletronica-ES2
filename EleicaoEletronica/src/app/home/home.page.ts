@@ -17,10 +17,21 @@ export class HomePage {
   constructor(private http: HttpClient) {}
 
   fazerLogin() {
+    const payload = {
+      codigoAcesso: this.codigoAcesso,
+      senha: this.senha
+    };
 
-    console.log(`codigo digitado: ${this.codigoAcesso}`);
-    console.log(`senha digitada: ${this.senha}`);
-
+    this.http.post<any>('http://localhost:3000/auth/login', payload).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('perfil', res.usuario.perfil);
+        alert(`Login realizado! Perfil: ${res.usuario.perfil}`);
+      },
+      error: (err) => {
+        alert(err.error?.erro || 'Erro ao realizar login');
+      }
+    });
   }
 
 }
