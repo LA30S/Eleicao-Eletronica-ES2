@@ -9,5 +9,8 @@ const VotoSchema = new mongoose.Schema({
     cargo: {
         type: String
     }
+    //, eleicao{
+    // type: date
+    //}
 });
 module.exports = mongoose.model('Voto', VotoSchema);

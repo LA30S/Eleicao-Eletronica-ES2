@@ -10,6 +10,6 @@ router.post('/login', usuarioController.login);
 router.post('/', autenticar, apenasChefe, usuarioController.cadastrarUsuario);
 router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
 router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
-router.delete('/:id', autenticar, apenasChefe, usuarioController.excluirUsuario);
+router.delete('/', autenticar, apenasChefe, usuarioController.excluirUsuario);
 
 module.exports = router;

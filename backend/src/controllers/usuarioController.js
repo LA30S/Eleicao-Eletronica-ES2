@@ -29,11 +29,15 @@ exports.login = async (req, res) => {
       if (conta) perfil = 'ELEITOR';
     }
 
-    // 3. Se não achar e o código for numérico, procura nos Candidatos (usa campo 'numero')
-    if (!conta && !isNaN(Number(codigoAcesso))) {
-      conta = await Candidato.findOne({ numero: Number(codigoAcesso) }).select('+senha');
+    // 3. Se não achar, procura nos Candidatos
+    if (!conta) {
+      conta = await Candidato.findOne({ login: codigoAcesso }).select('+senha');
       if (conta) perfil = 'CANDIDATO';
     }
+   // if (!conta && !isNaN(Number(codigoAcesso))) {
+    //  conta = await Candidato.findOne({ numero: Number(codigoAcesso) }).select('+senha');
+    //  if (conta) perfil = 'CANDIDATO';
+   // }
 
     if (!conta) {
       return res.status(401).json({ erro: 'Credenciais inválidas.' });
