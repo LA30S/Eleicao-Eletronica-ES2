@@ -5,7 +5,7 @@ const Chefe = require('../models/Chefe');
 const Candidato = require('../models/Candidato');
 const { JWT_SECRET } = require('../middlewares/auth.middleware');
 
-// TÓPICO 1: Login unificado (Chefe, Eleitor ou Candidato)
+// REQUISITO 1: Login unificado (Chefe, Eleitor ou Candidato)
 exports.login = async (req, res) => {
   try {
     const { codigoAcesso, senha } = req.body;
@@ -17,19 +17,19 @@ exports.login = async (req, res) => {
     let conta = null;
     let perfil = null;
 
-    // 1. Procura nos Chefes de Seção (usa campo 'login')
+    // 1. Procura nos Chefes de Seção (campo 'login')
     conta = await Chefe.findOne({ login: codigoAcesso }).select('+senha');
     if (conta) {
       perfil = 'CHEFE';
     }
 
-    // 2. Se não achar, procura nos Eleitores/Usuarios (usa campo 'login')
+    // 2. Se não achar, procura nos Eleitores/Usuarios (campo 'login')
     if (!conta) {
       conta = await Usuario.findOne({ login: codigoAcesso }).select('+senha');
       if (conta) perfil = 'ELEITOR';
     }
 
-    // 3. Se não achar e o código for numérico, procura nos Candidatos (usa campo 'numero')
+    // 3. Se não achar e o código for numérico, procura nos Candidatos (campo 'numero')
     if (!conta && !isNaN(Number(codigoAcesso))) {
       conta = await Candidato.findOne({ numero: Number(codigoAcesso) }).select('+senha');
       if (conta) perfil = 'CANDIDATO';
@@ -39,7 +39,6 @@ exports.login = async (req, res) => {
       return res.status(401).json({ erro: 'Credenciais inválidas.' });
     }
 
-    // Suporta senha com hash bcrypt ou texto puro (caso o seed/dummy tenha sido salvo sem hash)
     const senhaValida = conta.senha.startsWith('$2')
       ? await bcrypt.compare(senha, conta.senha)
       : senha === conta.senha;
@@ -52,7 +51,14 @@ exports.login = async (req, res) => {
       id: conta._id,
       nome: conta.nome,
       perfil,
-      ...(perfil === 'CANDIDATO' && { cargo: conta.cargo, numero: conta.numero })
+      ...(perfil === 'ELEITOR' && {
+        votou: conta.votou
+      }),
+      ...(perfil === 'CANDIDATO' && {
+        cargo: conta.cargo,
+        numero: conta.numero,
+        eleicaoId: conta.eleicao
+      })
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
@@ -62,7 +68,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// TÓPICO 3: Cadastrar Eleitor (Chefe da Seção)
+// REQUISITO 3: Cadastrar Eleitor (Chefe da Seção)
 exports.cadastrarUsuario = async (req, res) => {
   try {
     const { nome, login, senha } = req.body;
@@ -72,7 +78,8 @@ exports.cadastrarUsuario = async (req, res) => {
       nome,
       login,
       senha: senhaHash,
-      votou: false // Corrige o default: true do schema para eleitor recém-cadastrado
+      votou: false,
+      participacoes: []
     });
 
     await novoUsuario.save();
@@ -85,7 +92,7 @@ exports.cadastrarUsuario = async (req, res) => {
   }
 };
 
-// TÓPICO 3: Consultar Eleitores
+// REQUISITO 3: Consultar Eleitores
 exports.listarUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.find();
@@ -95,10 +102,13 @@ exports.listarUsuarios = async (req, res) => {
   }
 };
 
-// TÓPICO 3: Alterar dados de um Eleitor
+// REQUISITO 3: Alterar dados de um Eleitor
 exports.atualizarUsuario = async (req, res) => {
   try {
     const dados = { ...req.body };
+    delete dados.participacoes;
+    delete dados.votou;
+
     if (dados.senha) {
       dados.senha = await bcrypt.hash(dados.senha, 10);
     }
@@ -117,7 +127,7 @@ exports.atualizarUsuario = async (req, res) => {
   }
 };
 
-// TÓPICO 3: Excluir Eleitor
+// REQUISITO 3: Excluir Eleitor
 exports.excluirUsuario = async (req, res) => {
   try {
     const removido = await Usuario.findByIdAndDelete(req.params.id);

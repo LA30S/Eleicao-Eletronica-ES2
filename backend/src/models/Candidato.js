@@ -12,6 +12,12 @@ const CandidatoSchema = new mongoose.Schema({
         unique:  true,
         trim:true
     },
+    login:{
+             type: String,
+        required: [true, "O candidato deve ter um código de acesso"],
+        unique:  true,
+        trim:true
+    },
     senha:{
         type: String,
         required: [true, "O candidato deve ter uma senha cadastrada"],
@@ -29,6 +35,11 @@ const CandidatoSchema = new mongoose.Schema({
     type: String,
     required: [true, "O candidato deve estar afiliado a um partido"],
    trim: true
+    },
+    qtdVotos:{
+        type: Number,
+        required:[false],
+        default:0
     }
 }
 });

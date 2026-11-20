@@ -1,26 +1,16 @@
 const mongoose = require('mongoose');
 
+const usuarioSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  login: { type: String, required: true, unique: true },
+  senha: { type: String, required: true, select: false },
+  votou: { type: Boolean, default: false },
+  participacoes: [
+    {
+      eleicao: { type: mongoose.Schema.Types.ObjectId, ref: 'Eleicao', required: true },
+      cargo: { type: String, required: true }
+    }
+  ]
+}, { timestamps: true });
 
-const UsuarioSchema = new mongoose.Schema({
-    nome: {
-        type: String,
-        required: [true, "O nome do usuário é obrigatório"],
-        trim: true
-    },
-    login:{
-        type: String,
-        required: [true, "O usuário deve ter um código de acesso"],
-        unique:  true,
-        trim:true
-    },
-    senha:{
-        type: String,
-        required: [true, "O usuário deve ter uma senha cadastrada"],
-        select: false
-    },
-   votou: {
-    type: Boolean,
-    default: true
-   }
-});
-module.exports = mongoose.model('Usuario', UsuarioSchema);
+module.exports = mongoose.model('Usuario', usuarioSchema);

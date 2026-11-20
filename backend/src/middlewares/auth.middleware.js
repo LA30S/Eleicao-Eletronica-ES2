@@ -24,4 +24,11 @@ exports.apenasChefe = (req, res, next) => {
   return next();
 };
 
+exports.apenasEleitor = (req, res, next) => {
+  if (!req.usuario || req.usuario.perfil !== 'ELEITOR') {
+    return res.status(403).json({ erro: 'Acesso restrito aos eleitores.' });
+  }
+  return next();
+};
+
 exports.JWT_SECRET = JWT_SECRET;
