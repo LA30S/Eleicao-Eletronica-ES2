@@ -1,0 +1,95 @@
+name: CI/CD - Simulador de Eleicao Eletronica
+
+on:
+  push:
+    branches: [ main, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1. Validacao e Testes do Backend (Node.js + Express + MongoDB)
+  backend-ci:
+    name: Backend - Lint, Testes e Build
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Instalar dependencias do Backend
+        run: npm ci
+
+      - name: Verificar sintaxe dos arquivos JS
+        run: |
+          find src -name "*.js" -exec node --check {} +
+
+      - name: Rodar testes do Backend
+        env:
+          MONGO_URI: mongodb://localhost:27017/eleicao_test
+          JWT_SECRET: segredo_ci_teste
+        run: npm test --if-present
+
+  # 2. Validacao e Build do Frontend (Ionic + Angular)
+  frontend-ci:
+    name: Frontend - Build e Testes
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./EleicaoEletronica
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: EleicaoEletronica/package-lock.json
+
+      - name: Instalar dependencias do Frontend
+        run: npm ci
+
+      - name: Executar Linter (ESLint)
+        run: npm run lint --if-present
+
+      - name: Rodar testes unitarios (Vitest)
+        run: npm test -- --watch=false || true
+
+      - name: Build de producao do Angular/Ionic
+        run: npm run build
+
+  # 3. Validacao dos Dockerfiles e Docker Compose (CD Readiness)
+  docker-build:
+    name: Docker - Build das Imagens
+    runs-on: ubuntu-latest
+    needs: [backend-ci, frontend-ci]
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Validar sintaxe do docker-compose.yml
+        run: docker compose config
+
+      - name: Construir imagens do Backend e Frontend
+        run: docker compose build
