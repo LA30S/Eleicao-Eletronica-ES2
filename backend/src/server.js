@@ -31,3 +31,9 @@ app.use('/api/usuario', usuarioRoutes);
 app.use('/api/voto', votoRoutes);
 //eu peguei essa config genérica, podemos mudar depois as portas e o link se necessário
 app.listen(3000, () => console.log('Backend rodando na porta 3000'));
+
+if (require.main === module) {
+  app.listen(3000, () => console.log('Backend rodando na porta 3000'));
+}
+
+module.exports = app;
