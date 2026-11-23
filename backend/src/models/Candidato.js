@@ -24,23 +24,23 @@ const CandidatoSchema = new mongoose.Schema({
         select: false
     },
     cargo:{
-    type: String,
-    required: [true, "O candidato deve ter um cargo"],
-    enum: {
-      values: ['A definir', 'Deputado Estadual', 'Deputado Federal', 'Senador', 'Governador', 'Presidente da República'],
-      message: '{VALUE} não é um cargo válido',
-      default: 'A definir'
+        type: String,
+        required: [true, "O candidato deve ter um cargo"],
+        enum: {
+            values: ['A definir', 'Deputado Estadual', 'Deputado Federal', 'Senador', 'Governador', 'Presidente da República'],
+            message: '{VALUE} não é um cargo válido',
+        },
+        default: 'A definir'
     },
-        partido:{
-    type: String,
-    required: [true, "O candidato deve estar afiliado a um partido"],
-   trim: true
+    partido:{
+        type: String,
+        required: [true, "O candidato deve estar afiliado a um partido"],
+        trim: true
     },
     qtdVotos:{
         type: Number,
         required:[false],
         default:0
     }
-}
 });
 module.exports = mongoose.model('Candidato', CandidatoSchema);

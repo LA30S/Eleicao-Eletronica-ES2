@@ -12,7 +12,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
 
 /**
  * @swagger
- * /api/candidatos/:
+ * /api/candidatos:
  *   post:
  *     summary: Cadastra um novo candidato
  *     description: Cadastra um candidato no sistema. A senha é armazenada utilizando hash e não é incluída na resposta.
@@ -77,7 +77,7 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
 
 /**
  * @swagger
- * /api/candidatos/:
+ * /api/candidatos:
  *   get:
  *     summary: Lista todos os candidatos
  *     description: Retorna todos os candidatos cadastrados no sistema.
@@ -191,7 +191,7 @@ router.delete('/:id', autenticar, apenasChefe, candidatoController.excluirCandid
 
 /**
  * @swagger
- * /api/candidatos/:
+ * /api/candidatos/cargo:
  *   get:
  *     summary: Lista candidatos por cargo
  *     description: Consulta candidatos utilizando os parâmetros enviados na query string como critérios de busca.
@@ -220,11 +220,11 @@ router.delete('/:id', autenticar, apenasChefe, candidatoController.excluirCandid
  *       500:
  *         description: Erro ao buscar candidatos deste cargo.
  */
-router.get('/', autenticar, candidatoController.listarCandidatosCargo);
+router.get('/cargo', autenticar, candidatoController.listarCandidatosCargo);
 
 /**
  * @swagger
- * /api/candidatos/:
+ * /api/candidatos/mais-votados-cargo:
  *   get:
  *     summary: Consulta o candidato mais votado por cargo
  *     description: Consulta candidatos utilizando os parâmetros enviados na query string e limita o resultado a um registro.
@@ -253,11 +253,11 @@ router.get('/', autenticar, candidatoController.listarCandidatosCargo);
  *       500:
  *         description: Erro ao buscar candidatos deste cargo.
  */
-router.get('/', autenticar, candidatoController.listarMaisCargo); 
+router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCargo); 
 
 /**
  * @swagger
- * /api/candidatos/{id}:
+ * /api/candidatos/{id}/voto:
  *   put:
  *     summary: Adiciona um voto a um candidato
  *     description: Executa uma operação de incremento na quantidade de votos do candidato.
@@ -280,6 +280,6 @@ router.get('/', autenticar, candidatoController.listarMaisCargo);
  *       500:
  *         description: Erro ao contabilizar voto.
  */
-router.put('/:id', autenticar, apenasEleitor, candidatoController.addVoto);
+router.put('/:id/voto', autenticar, apenasEleitor, candidatoController.addVoto);
 
 module.exports = router;

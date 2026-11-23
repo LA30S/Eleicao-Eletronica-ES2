@@ -181,7 +181,7 @@ router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
 
 /**
  * @swagger
- * /api/usuario:
+ * /api/usuario/{id}:
  *   delete:
  *     summary: Exclui um eleitor
  *     description: Remove permanentemente um eleitor identificado pelo ID.
@@ -208,6 +208,6 @@ router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
  *       500:
  *         description: Erro interno do servidor.
  */
-router.delete('/', autenticar, apenasChefe, usuarioController.excluirUsuario);
+router.delete('/:id', autenticar, apenasChefe, usuarioController.excluirUsuario);
 
 module.exports = router;

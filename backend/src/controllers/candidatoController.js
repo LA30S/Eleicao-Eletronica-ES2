@@ -5,6 +5,10 @@ const Candidato = require('../models/Candidato');
 exports.cadastrarCandidato = async (req, res) => {
   try {
     const { nome, numero, login, senha, cargo, partido } = req.body;
+
+    // Verifica se a senha é uma string vazia
+    if(senha == "")
+      return res.status(400).json({ erro: "Senha é um campo obrigatório" });
     const senhaHash = await bcrypt.hash(senha, 10);
 
     const novoCandidato = new Candidato({ nome, numero, login, senha: senhaHash, cargo, partido });
@@ -36,7 +40,7 @@ exports.atualizarCandidato = async (req, res) => {
       dados.senha = await bcrypt.hash(dados.senha, 10);
     }
 
-    const atualizado = await Usuario.findByIdAndUpdate(req.params.id, dados, {
+    const atualizado = await Candidato.findByIdAndUpdate(req.params.id, dados, {
       new: true,
       runValidators: true
     });
@@ -53,7 +57,7 @@ exports.atualizarCandidato = async (req, res) => {
 //Excluir Candidato
 exports.excluirCandidato = async (req, res) => {
   try {
-    const removido = await Usuario.findByIdAndDelete(req.params.id);
+    const removido = await Candidato.findByIdAndDelete(req.params.id);
     if (!removido) {
       return res.status(404).json({ erro: 'Candidato não encontrado.' });
     }
@@ -66,8 +70,8 @@ exports.excluirCandidato = async (req, res) => {
 //Exibir candidatos por cargo
 exports.listarCandidatosCargo = async(req, res) =>{
 try {
-  const tipoCargo=req.query;
-    const candidatosCargo = await Candidato.find(tipoCargo).sort({[qtdVoto]:-1});
+  const { cargo } = req.query;
+    const candidatosCargo = await Candidato.find({ cargo }).sort({ qtdVotos: -1 });
     return res.status(200).json(candidatosCargo);
   } catch (error) {
     return res.status(500).json({ erro: 'Erro ao buscar candidatos deste cargo' });
@@ -77,8 +81,8 @@ try {
 //Exibir cadidato mais votado por cargo
 exports.listarMaisCargo = async(req, res) =>{
 try {
-  const tipoCargo=req.query;
-    const candidatoMaisCargo = await Candidato.find(tipoCargo).sort({[qtdVoto]:-1}).limit(1);
+  const { cargo } = req.query;
+    const candidatoMaisCargo = await Candidato.find({ cargo }).sort({ qtdVoto: -1 }).limit(1);
     
     return res.status(200).json(candidatoMaisCargo);
   } catch (error) {
@@ -89,11 +93,24 @@ try {
 //adicionar voto
 exports.addVoto = async(req, res) =>{
      try {
-    const{numero}=req.params
-    const novoVoto=await Candidato.updateOne(
-      {numero:numero},
-      {$inc:{qtdVoto:1}}
-    )
+      const{ id } = req.params;
+      const novoVoto = await Candidato.findByIdAndUpdate(
+      id,
+      { $inc: { qtdVotos: 1 } },
+      { new: true }
+    );
+
+    if(!novoVoto) {
+      return res.status(404).json({
+        erro: 'Candidato não encontrado'
+      });
+    }
+
+    return res.status(200).json({
+      mensagem: 'Voto contabilizado com sucesso',
+      candidato: novoVoto
+    });
+
   }catch(error){
       return res.status(500).json({ erro: 'Erro ao contabilizar voto' });
   }

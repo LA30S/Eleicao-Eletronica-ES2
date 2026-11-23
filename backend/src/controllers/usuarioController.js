@@ -29,10 +29,18 @@ exports.login = async (req, res) => {
       if (conta) perfil = 'ELEITOR';
     }
 
+    /*
     // 3. Se não achar e o código for numérico, procura nos Candidatos (campo 'numero')
     if (!conta && !isNaN(Number(codigoAcesso))) {
       conta = await Candidato.findOne({ numero: Number(codigoAcesso) }).select('+senha');
       if (conta) perfil = 'CANDIDATO';
+    }
+    */
+
+    // 2. Se não achar, procura nos Candidator (campo 'login')
+    if(!conta) {
+      conta = await Candidato.findOne({ login: codigoAcesso }).select('+senha');
+      if(conta) perfil = 'CANDIDATO';
     }
 
     if (!conta) {
@@ -72,6 +80,10 @@ exports.login = async (req, res) => {
 exports.cadastrarUsuario = async (req, res) => {
   try {
     const { nome, login, senha } = req.body;
+
+    // Verifica se a senha é uma string vazia
+    if(senha == "")
+      return res.status(400).json({ erro: "Senha é um campo obrigatório" });
     const senhaHash = await bcrypt.hash(senha, 10);
 
     const novoUsuario = new Usuario({
