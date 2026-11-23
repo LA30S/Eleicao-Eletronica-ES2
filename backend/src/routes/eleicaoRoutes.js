@@ -15,7 +15,7 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  * /api/eleicao:
  *   get:
  *     summary: Lista todas as eleições
- *     description: Retorna todas as eleições cadastradas no sistema. É necessário estar autenticado para realizar a consulta.
+ *     description: Retorna todas as eleições cadastradas no sistema. Acesso restrito ao Chefe da Seção.
  *     tags: [Eleições]
  *     security:
  *       - bearerAuth: []
@@ -28,17 +28,21 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Eleicao'
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Acesso restrito ao Chefe da Seção.
  *       500:
  *         description: Erro interno ao buscar as eleições.
  */
-router.get('/', autenticar, eleicaoController.listarEleicoes);
+router.get('/', autenticar, apenasChefe, eleicaoController.listarEleicoes);
 
 /**
  * @swagger
  * /api/eleicao/{id}:
  *   get:
  *     summary: Consulta uma eleição específica
- *     description: Busca uma eleição pelo seu ID e retorna seus dados, incluindo a situação atual.
+ *     description: Busca uma eleição pelo seu ID e retorna seus dados, incluindo a situação atual. Acesso restrito ao Chefe da Seção.
  *     tags: [Eleições]
  *     security:
  *       - bearerAuth: []
@@ -57,14 +61,18 @@ router.get('/', autenticar, eleicaoController.listarEleicoes);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Eleicao'
+ *       400:
+ *         description: ID de eleição inválido.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Acesso restrito ao Chefe da Seção.
  *       404:
  *         description: Eleição não encontrada.
  *       500:
  *         description: Erro interno ao consultar a eleição.
  */
-router.get('/:id', autenticar, eleicaoController.consultarSituacao);
+router.get('/:id', autenticar, apenasChefe, eleicaoController.consultarSituacao);
 
 /**
  * @swagger
@@ -117,36 +125,6 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *     responses:
  *       200:
  *         description: Eleição aberta com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensagem:
- *                   type: string
- *                   example: Eleição ABERTA com sucesso.
- *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ABERTA
  *       400:
  *         description: A eleição não pode ser aberta porque não está AGENDADA.
  *       401:
@@ -180,36 +158,6 @@ router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleic
  *     responses:
  *       200:
  *         description: Eleição encerrada com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensagem:
- *                   type: string
- *                   example: Eleição ENCERRADA com sucesso.
- *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ENCERRADA
  *       400:
  *         description: Somente eleições ABERTAS podem ser encerradas.
  *       401:

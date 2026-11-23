@@ -33,9 +33,6 @@ app.use('/api/eleicao', eleicaoRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/voto', votoRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-//eu peguei essa config genérica, podemos mudar depois as portas e o link se necessário
-app.listen(3000, () => console.log('Backend rodando na porta 3000'));
-
 if (require.main === module) {
   app.listen(3000, () => console.log('Backend rodando na porta 3000'));
 }

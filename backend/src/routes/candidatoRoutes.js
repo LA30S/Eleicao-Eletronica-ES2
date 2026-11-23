@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const candidatoController = require('../controllers/candidatoController');
-const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.middleware');
+const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
 
 /**
  * @swagger
  * tags:
  *   name: Candidatos
- *   description: Operações de cadastro, consulta, atualização e votação de candidatos
+ *   description: Operações de cadastro, consulta e atualização de candidatos
  */
 
 /**
@@ -15,7 +15,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  * /api/candidatos:
  *   post:
  *     summary: Cadastra um novo candidato
- *     description: Cadastra um candidato no sistema. A senha é armazenada utilizando hash e não é incluída na resposta.
+ *     description: Cadastra um candidato vinculado a um cargo e a uma eleição. A senha é armazenada utilizando hash e não é incluída na resposta.
  *     tags: [Candidatos]
  *     security:
  *       - bearerAuth: []
@@ -32,6 +32,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               - senha
  *               - cargo
  *               - partido
+ *               - eleicao
  *             properties:
  *               nome:
  *                 type: string
@@ -41,7 +42,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *                 example: 50
  *               login:
  *                 type: string
- *                 example: 98765
+ *                 example: cand50
  *               senha:
  *                 type: string
  *                 example: senha123
@@ -49,7 +50,6 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               cargo:
  *                 type: string
  *                 enum:
- *                   - A definir
  *                   - Deputado Estadual
  *                   - Deputado Federal
  *                   - Senador
@@ -59,13 +59,12 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               partido:
  *                 type: string
  *                 example: Partido Exemplar
+ *               eleicao:
+ *                 type: string
+ *                 example: 674abc123456789
  *     responses:
  *       201:
  *         description: Candidato cadastrado com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Candidato'
  *       400:
  *         description: Erro ao cadastrar candidato.
  *       401:
@@ -87,12 +86,6 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *     responses:
  *       200:
  *         description: Lista de candidatos retornada com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Candidato'
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:
@@ -101,6 +94,72 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *         description: Erro ao buscar candidatos.
  */
 router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
+
+/**
+ * @swagger
+ * /api/candidatos/cargo:
+ *   get:
+ *     summary: Lista candidatos por cargo
+ *     description: Candidatos visualizam exclusivamente os concorrentes do próprio cargo e eleição; demais perfis podem filtrar por cargo e eleição.
+ *     tags: [Candidatos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: cargo
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: Governador
+ *       - in: query
+ *         name: eleicao
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 674abc123456789
+ *     responses:
+ *       200:
+ *         description: Candidatos encontrados para a consulta.
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       500:
+ *         description: Erro ao buscar candidatos deste cargo.
+ */
+router.get('/cargo', autenticar, candidatoController.listarCandidatosCargo);
+
+/**
+ * @swagger
+ * /api/candidatos/mais-votados-cargo:
+ *   get:
+ *     summary: Consulta o candidato mais votado por cargo
+ *     description: Retorna o(s) candidato(s) mais votado(s) do cargo informado após o encerramento da eleição.
+ *     tags: [Candidatos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: cargo
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: Governador
+ *       - in: query
+ *         name: eleicao
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: 674abc123456789
+ *     responses:
+ *       200:
+ *         description: Candidato(s) mais votado(s) encontrado(s).
+ *       400:
+ *         description: Parâmetros inválidos ou eleição ainda não encerrada.
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       500:
+ *         description: Erro ao buscar candidatos deste cargo.
+ */
+router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCargo);
 
 /**
  * @swagger
@@ -115,7 +174,6 @@ router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do candidato no MongoDB.
  *         schema:
  *           type: string
  *           example: 674abc123456789
@@ -128,22 +186,18 @@ router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
  *             properties:
  *               nome:
  *                 type: string
- *                 example: João da Silva
  *               numero:
  *                 type: integer
- *                 example: 123
  *               login:
  *                 type: string
- *                 example: joao123
  *               senha:
  *                 type: string
- *                 example: novaSenha123
  *               cargo:
  *                 type: string
- *                 example: Governador
  *               partido:
  *                 type: string
- *                 example: Partido Exemplo
+ *               eleicao:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Candidato atualizado com sucesso.
@@ -163,7 +217,7 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  * /api/candidatos/{id}:
  *   delete:
  *     summary: Exclui um candidato
- *     description: Exclui um candidato identificado pelo ID.
+ *     description: Exclui um candidato identificado pelo ID caso ainda não possua votos registrados.
  *     tags: [Candidatos]
  *     security:
  *       - bearerAuth: []
@@ -171,13 +225,14 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do candidato no MongoDB.
  *         schema:
  *           type: string
  *           example: 674abc123456789
  *     responses:
  *       200:
  *         description: Candidato excluído com sucesso.
+ *       400:
+ *         description: Candidato já possui votos ou ID inválido.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:
@@ -188,98 +243,5 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  *         description: Erro interno do servidor.
  */
 router.delete('/:id', autenticar, apenasChefe, candidatoController.excluirCandidato);
-
-/**
- * @swagger
- * /api/candidatos/cargo:
- *   get:
- *     summary: Lista candidatos por cargo
- *     description: Consulta candidatos utilizando os parâmetros enviados na query string como critérios de busca.
- *     tags: [Candidatos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: cargo
- *         required: false
- *         description: Cargo utilizado como critério de busca.
- *         schema:
- *           type: string
- *           example: Governador
- *     responses:
- *       200:
- *         description: Candidatos encontrados para a consulta.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Candidato'
- *       401:
- *         description: Token de autenticação não fornecido ou inválido.
- *       500:
- *         description: Erro ao buscar candidatos deste cargo.
- */
-router.get('/cargo', autenticar, candidatoController.listarCandidatosCargo);
-
-/**
- * @swagger
- * /api/candidatos/mais-votados-cargo:
- *   get:
- *     summary: Consulta o candidato mais votado por cargo
- *     description: Consulta candidatos utilizando os parâmetros enviados na query string e limita o resultado a um registro.
- *     tags: [Candidatos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: cargo
- *         required: false
- *         description: Cargo utilizado como critério de busca.
- *         schema:
- *           type: string
- *           example: Governador
- *     responses:
- *       200:
- *         description: Candidato encontrado para a consulta.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Candidato'
- *       401:
- *         description: Token de autenticação não fornecido ou inválido.
- *       500:
- *         description: Erro ao buscar candidatos deste cargo.
- */
-router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCargo); 
-
-/**
- * @swagger
- * /api/candidatos/{id}/voto:
- *   put:
- *     summary: Adiciona um voto a um candidato
- *     description: Executa uma operação de incremento na quantidade de votos do candidato.
- *     tags: [Candidatos]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Parâmetro recebido pela rota.
- *         schema:
- *           type: string
- *           example: 123
- *     responses:
- *       200:
- *         description: Operação de votação realizada.
- *       401:
- *         description: Token de autenticação não fornecido ou inválido.
- *       500:
- *         description: Erro ao contabilizar voto.
- */
-router.put('/:id/voto', autenticar, apenasEleitor, candidatoController.addVoto);
 
 module.exports = router;
