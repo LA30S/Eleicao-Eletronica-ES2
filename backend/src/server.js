@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
 const candidatoRoutes = require('./routes/candidatoRoutes');
 const chefeRoutes = require('./routes/chefeRoutes');
 const eleicaoRoutes = require('./routes/eleicaoRoutes');
@@ -24,11 +27,16 @@ app.get('/api', (req, res) => {
   res.json({ message: 'API funcionando!' });
 });
 
-app.use('/api/candidatos  ', candidatoRoutes);
+app.get('/api/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json'); res.send(swaggerSpec);
+});
+
+app.use('/api/candidatos', candidatoRoutes);
 app.use('/api/chefe', chefeRoutes);
 app.use('/api/eleicao', eleicaoRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/voto', votoRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //eu peguei essa config genérica, podemos mudar depois as portas e o link se necessário
 app.listen(3000, () => console.log('Backend rodando na porta 3000'));
 
