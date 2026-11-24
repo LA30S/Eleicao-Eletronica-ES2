@@ -50,7 +50,7 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  *                   properties:
  *                     id:
  *                       type: string
- *                       example: 674abc123456789
+ *                       example: string
  *                     nome:
  *                       type: string
  *                       example: Marcio
@@ -101,6 +101,7 @@ router.post('/login', usuarioController.login);
  */
 router.post('/', autenticar, apenasChefe, usuarioController.cadastrarUsuario);
 
+
 /**
  * @swagger
  * /api/usuario:
@@ -119,6 +120,66 @@ router.post('/', autenticar, apenasChefe, usuarioController.cadastrarUsuario);
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Usuario'
+ *             example:
+ *               - _id: "string"
+ *                 nome: "Fulano"
+ *                 login: "445566"
+ *                 votou: true
+ *                 participacoes:
+ *                   - eleicao: "string"
+ *                     cargo: "Deputado Estadual"
+ *                     _id: "string"
+ *                   - eleicao: "string"
+ *                     cargo: "Deputado Federal"
+ *                     _id: "string"
+ *                   - eleicao: "string"
+ *                     cargo: "Senador"
+ *                     _id: "string"
+ *                   - eleicao: "string"
+ *                     cargo: "Governador"
+ *                     _id: "string"
+ *                   - eleicao: "string"
+ *                     cargo: "Presidente da República"
+ *                     _id: "string"
+ *                 createdAt: "2026-11-24T02:40:40.539Z"
+ *                 updatedAt: "2026-11-24T03:46:27.245Z"
+ *                 __v: 0
+ *
+ *               - _id: "string"
+ *                 nome: "Ciclano"
+ *                 login: "44566"
+ *                 votou: false
+ *                 participacoes: []
+ *                 createdAt: "2026-11-24T02:41:09.126Z"
+ *                 updatedAt: "2026-11-24T02:41:09.126Z"
+ *                 __v: 0
+ *
+ *               - _id: "string"
+ *                 nome: "Jorge"
+ *                 login: "445669"
+ *                 votou: false
+ *                 participacoes: []
+ *                 createdAt: "2026-11-24T02:41:21.647Z"
+ *                 updatedAt: "2026-11-24T02:41:21.647Z"
+ *                 __v: 0
+ *
+ *               - _id: "string"
+ *                 nome: "Lucia"
+ *                 login: "115669"
+ *                 votou: false
+ *                 participacoes: []
+ *                 createdAt: "2026-11-24T02:41:33.526Z"
+ *                 updatedAt: "2026-11-24T02:41:33.526Z"
+ *                 __v: 0
+ *
+ *               - _id: "string"
+ *                 nome: "Ana"
+ *                 login: "115329"
+ *                 votou: false
+ *                 participacoes: []
+ *                 createdAt: "2026-11-24T02:41:50.716Z"
+ *                 updatedAt: "2026-11-24T02:41:50.716Z"
+ *                 __v: 0
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:
@@ -126,6 +187,7 @@ router.post('/', autenticar, apenasChefe, usuarioController.cadastrarUsuario);
  *       500:
  *         description: Erro ao buscar usuários.
  */
+
 router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
 
 /**
@@ -144,7 +206,7 @@ router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
  *         description: ID do eleitor no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     requestBody:
  *       required: true
  *       content:
@@ -179,6 +241,7 @@ router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
  */
 router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
 
+
 /**
  * @swagger
  * /api/usuario/{id}:
@@ -195,10 +258,19 @@ router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
  *         description: ID do eleitor no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Eleitor excluído com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *             example:
+ *               mensagem: "Eleitor excluído com sucesso."
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:

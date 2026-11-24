@@ -76,7 +76,7 @@ const options = {
           properties: {
             _id: {
               type: 'string',
-              example: '674abc123456789'
+              example: 'string'
             },
             nome: {
               type: 'string',
@@ -115,7 +115,7 @@ const options = {
           properties: {
             _id: {
               type: 'string',
-              example: '674abc123456789'
+              example: 'string'
             },
             data: {
               type: 'string',
@@ -171,7 +171,7 @@ const options = {
           properties: {
             _id: {
               type: 'string',
-              example: '674abc123456789'
+              example: 'string'
             },
             numCandidato: {
               type: 'integer',
@@ -217,7 +217,7 @@ const options = {
           properties: {
             _id: {
               type: 'string',
-              example: '674abc123456789'
+              example: 'string'
             },
             nome: {
               type: 'string',

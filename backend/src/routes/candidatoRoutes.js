@@ -10,6 +10,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *   description: Operações de cadastro, consulta, atualização e votação de candidatos
  */
 
+
 /**
  * @swagger
  * /api/candidatos:
@@ -35,13 +36,13 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *             properties:
  *               nome:
  *                 type: string
- *                 example: Marcio
+ *                 example: Marco
  *               numero:
  *                 type: integer
- *                 example: 50
+ *                 example: 15148
  *               login:
  *                 type: string
- *                 example: 98765
+ *                 example: "1104417"
  *               senha:
  *                 type: string
  *                 example: senha123
@@ -59,13 +60,50 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               partido:
  *                 type: string
  *                 example: Partido Exemplar
+ *               eleicao:
+ *                 type: string
+ *                 example: "string"
+ *           example:
+ *             nome: Marco
+ *             numero: 15148
+ *             login: "1104417"
+ *             senha: senha123
+ *             cargo: Senador
+ *             partido: Partido Exemplar
+ *             eleicao: "string"
  *     responses:
  *       201:
  *         description: Candidato cadastrado com sucesso.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Candidato'
+ *               type: object
+ *               properties:
+ *                 nome:
+ *                   type: string
+ *                 numero:
+ *                   type: integer
+ *                 login:
+ *                   type: string
+ *                 cargo:
+ *                   type: string
+ *                 partido:
+ *                   type: string
+ *                 eleicao:
+ *                   type: string
+ *                 _id:
+ *                   type: string
+ *                 __v:
+ *                   type: integer
+ *             example:
+ *               nome: Marco
+ *               numero: 15148
+ *               login: "1104417"
+ *               cargo: Senador
+ *               partido: Partido Exemplar
+ *               eleicao: "string"
+ *               _id: "string"
+ *               __v: 0
  *       400:
  *         description: Erro ao cadastrar candidato.
  *       401:
@@ -74,6 +112,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *         description: Acesso restrito ao Chefe da Seção.
  */
 router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato);
+
 
 /**
  * @swagger
@@ -92,7 +131,155 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Candidato'
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   nome:
+ *                     type: string
+ *                   numero:
+ *                     type: integer
+ *                   login:
+ *                     type: string
+ *                   cargo:
+ *                     type: string
+ *                   partido:
+ *                     type: string
+ *                   eleicao:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       data:
+ *                         type: string
+ *                         format: date-time
+ *                       turno:
+ *                         type: integer
+ *                       situacao:
+ *                         type: string
+ *                   __v:
+ *                     type: integer
+ *             example:
+ *               - _id: "string"
+ *                 nome: "Fábio"
+ *                 numero: 15
+ *                 login: "1109"
+ *                 cargo: "Deputado Estadual"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Bernardo"
+ *                 numero: 18
+ *                 login: "11009"
+ *                 cargo: "Deputado Estadual"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Cleber"
+ *                 numero: 152
+ *                 login: "110119"
+ *                 cargo: "Deputado Federal"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Rogéria"
+ *                 numero: 158
+ *                 login: "1101129"
+ *                 cargo: "Deputado Federal"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Luisa"
+ *                 numero: 1518
+ *                 login: "11017"
+ *                 cargo: "Governador"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Reginaldo"
+ *                 numero: 1548
+ *                 login: "110417"
+ *                 cargo: "Governador"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Marco"
+ *                 numero: 15148
+ *                 login: "1104417"
+ *                 cargo: "Senador"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Cláudia"
+ *                 numero: 15198
+ *                 login: "04417"
+ *                 cargo: "Senador"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Fabricio"
+ *                 numero: 151980
+ *                 login: "0417"
+ *                 cargo: "Presidente da República"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Clotilde"
+ *                 numero: 151280
+ *                 login: "04137"
+ *                 cargo: "Presidente da República"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao:
+ *                   _id: "string"
+ *                   data: "2026-11-23T00:00:00.000Z"
+ *                   turno: 1
+ *                   situacao: "AGENDADA"
+ *                 __v: 0
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:
@@ -101,6 +288,146 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *         description: Erro ao buscar candidatos.
  */
 router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
+
+
+/**
+ * @swagger
+ * /api/candidatos/cargo:
+ *   get:
+ *     summary: Lista candidatos por cargo
+ *     description: Candidatos visualizam exclusivamente os concorrentes do próprio cargo e eleição; demais perfis podem filtrar por cargo e eleição.
+ *     tags: [Candidatos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: cargo
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: Governador
+ *       - in: query
+ *         name: eleicao
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: string
+ *     responses:
+ *       200:
+ *         description: Candidatos encontrados para a consulta.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   nome:
+ *                     type: string
+ *                   numero:
+ *                     type: integer
+ *                   login:
+ *                     type: string
+ *                   cargo:
+ *                     type: string
+ *                   partido:
+ *                     type: string
+ *                   eleicao:
+ *                     type: string
+ *                   qtdVotos:
+ *                     type: integer
+ *                   __v:
+ *                     type: integer
+ *             example:
+ *               - _id: "string"
+ *                 nome: "Luisa"
+ *                 numero: 1518
+ *                 login: "11017"
+ *                 cargo: "Governador"
+ *                 partido: "Partido Ambíguo"
+ *                 eleicao: "string"
+ *                 qtdVotos: 0
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: "Reginaldo"
+ *                 numero: 1548
+ *                 login: "110417"
+ *                 cargo: "Governador"
+ *                 partido: "Partido Exemplar"
+ *                 eleicao: "string"
+ *                 qtdVotos: 0
+ *                 __v: 0
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       500:
+ *         description: Erro ao buscar candidatos deste cargo.
+ */
+
+router.get('/cargo', autenticar, candidatoController.listarCandidatosCargo);
+
+
+/**
+ * @swagger
+ * /api/candidatos/mais-votados-cargo:
+ *   get:
+ *     summary: Consulta o candidato mais votado por cargo
+ *     description: Retorna o(s) candidato(s) mais votado(s) do cargo informado após o encerramento da eleição.
+ *     tags: [Candidatos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: cargo
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: Governador
+ *       - in: query
+ *         name: eleicao
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: string
+ *     responses:
+ *       200:
+ *         description: Candidato(s) mais votado(s) encontrado(s).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   nome:
+ *                     type: string
+ *                   numero:
+ *                     type: integer
+ *                   partido:
+ *                     type: string
+ *                   cargo:
+ *                     type: string
+ *                   votos:
+ *                     type: integer
+ *             example:
+ *               - _id: "6b04fc24ef08a6a5a2f249ff"
+ *                 nome: "Luisa"
+ *                 numero: 1518
+ *                 partido: "Partido Ambíguo"
+ *                 cargo: "Governador"
+ *                 votos: 1
+ *       400:
+ *         description: Parâmetros inválidos ou eleição ainda não encerrada.
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       500:
+ *         description: Erro ao buscar candidatos deste cargo.
+ */
+router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCargo);
+
 
 /**
  * @swagger
@@ -118,7 +445,7 @@ router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
  *         description: ID do candidato no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     requestBody:
  *       required: true
  *       content:
@@ -128,25 +455,67 @@ router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
  *             properties:
  *               nome:
  *                 type: string
- *                 example: João da Silva
+ *                 example: Clotilde
  *               numero:
  *                 type: integer
- *                 example: 123
+ *                 example: 151280
  *               login:
  *                 type: string
- *                 example: joao123
+ *                 example: "04137"
  *               senha:
  *                 type: string
  *                 example: novaSenha123
+ *                 writeOnly: true
  *               cargo:
  *                 type: string
- *                 example: Governador
+ *                 example: Presidente da República
  *               partido:
  *                 type: string
- *                 example: Partido Exemplo
+ *                 example: Partido Exemplar
+ *               eleicao:
+ *                 type: string
+ *                 example: "string"
+ *           example:
+ *             nome: Clotilde
+ *             numero: 151280
+ *             login: "04137"
+ *             senha: novaSenha123
+ *             cargo: Presidente da República
+ *             partido: Partido Exemplar
+ *             eleicao: "string"
  *     responses:
  *       200:
  *         description: Candidato atualizado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 nome:
+ *                   type: string
+ *                 numero:
+ *                   type: integer
+ *                 login:
+ *                   type: string
+ *                 cargo:
+ *                   type: string
+ *                 partido:
+ *                   type: string
+ *                 eleicao:
+ *                   type: string
+ *                 __v:
+ *                   type: integer
+ *             example:
+ *               _id: "string"
+ *               nome: Clotilde
+ *               numero: 151280
+ *               login: "04137"
+ *               cargo: Presidente da República
+ *               partido: Partido Exemplar
+ *               eleicao: "string"
+ *               __v: 0
  *       400:
  *         description: Erro ao atualizar candidato.
  *       401:
@@ -174,10 +543,21 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  *         description: ID do candidato no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Candidato excluído com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *             example:
+ *               mensagem: "Candidato excluído com sucesso."
+ *       400:
+ *         description: Candidato já possui votos ou ID inválido.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:

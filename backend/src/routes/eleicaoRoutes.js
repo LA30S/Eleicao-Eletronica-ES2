@@ -10,6 +10,7 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  *   description: Operações de gerenciamento e consulta de eleições
  */
 
+
 /**
  * @swagger
  * /api/eleicao:
@@ -28,10 +29,30 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Eleicao'
+ *             example:
+ *               - _id: "string"
+ *                 data: "2026-11-23T00:00:00.000Z"
+ *                 turno: 1
+ *                 abertura: "08:00"
+ *                 encerramento: "17:00"
+ *                 situacao: "ENCERRADA"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 data: "2026-11-25T00:00:00.000Z"
+ *                 turno: 2
+ *                 abertura: "08:00"
+ *                 encerramento: "17:00"
+ *                 situacao: "ABERTA"
+ *                 __v: 0
+ *       401:
+ *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Acesso restrito ao Chefe da Seção.
  *       500:
  *         description: Erro interno ao buscar as eleições.
  */
-router.get('/', autenticar, eleicaoController.listarEleicoes);
+
+router.get('/', autenticar, apenasChefe, eleicaoController.listarEleicoes);
 
 /**
  * @swagger
@@ -49,7 +70,7 @@ router.get('/', autenticar, eleicaoController.listarEleicoes);
  *         description: ID da eleição no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Eleição encontrada com sucesso.
@@ -97,6 +118,7 @@ router.get('/:id', autenticar, eleicaoController.consultarSituacao);
  */
 router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
 
+
 /**
  * @swagger
  * /api/eleicao/{id}/abrir:
@@ -113,7 +135,7 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *         description: ID da eleição no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Eleição aberta com sucesso.
@@ -124,29 +146,18 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *               properties:
  *                 mensagem:
  *                   type: string
- *                   example: Eleição ABERTA com sucesso.
  *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ABERTA
+ *                   $ref: '#/components/schemas/Eleicao'
+ *             example:
+ *               mensagem: "Eleição ABERTA com sucesso."
+ *               eleicao:
+ *                 _id: "string"
+ *                 data: "2026-11-23T00:00:00.000Z"
+ *                 turno: 1
+ *                 abertura: "08:00"
+ *                 encerramento: "17:00"
+ *                 situacao: "ABERTA"
+ *                 __v: 0
  *       400:
  *         description: A eleição não pode ser aberta porque não está AGENDADA.
  *       401:
@@ -159,6 +170,7 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *         description: Erro interno ao abrir a eleição.
  */
 router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleicao);
+
 
 /**
  * @swagger
@@ -176,7 +188,7 @@ router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleic
  *         description: ID da eleição no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Eleição encerrada com sucesso.
@@ -187,29 +199,18 @@ router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleic
  *               properties:
  *                 mensagem:
  *                   type: string
- *                   example: Eleição ENCERRADA com sucesso.
  *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ENCERRADA
+ *                   $ref: '#/components/schemas/Eleicao'
+ *             example:
+ *               mensagem: "Eleição ENCERRADA com sucesso."
+ *               eleicao:
+ *                 _id: "string"
+ *                 data: "2026-11-23T00:00:00.000Z"
+ *                 turno: 1
+ *                 abertura: "08:00"
+ *                 encerramento: "17:00"
+ *                 situacao: "ENCERRADA"
+ *                 __v: 0
  *       400:
  *         description: Somente eleições ABERTAS podem ser encerradas.
  *       401:
