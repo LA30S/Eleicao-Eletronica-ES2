@@ -190,6 +190,7 @@ router.post('/', autenticar, apenasChefe, usuarioController.cadastrarUsuario);
 
 router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
 
+
 /**
  * @swagger
  * /api/usuario/{id}:
@@ -206,7 +207,7 @@ router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
  *         description: ID do eleitor no MongoDB.
  *         schema:
  *           type: string
- *           example: string
+ *           example: "string"
  *     requestBody:
  *       required: true
  *       content:
@@ -219,7 +220,7 @@ router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
  *                 example: Marcio
  *               login:
  *                 type: string
- *                 example: 123456
+ *                 example: "123456"
  *               senha:
  *                 type: string
  *                 example: novaSenha123
@@ -229,7 +230,21 @@ router.get('/', autenticar, apenasChefe, usuarioController.listarUsuarios);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Usuario'
+ *               type: object
+ *               properties:
+ *                 nome:
+ *                   type: string
+ *                 login:
+ *                   type: string
+ *                 senha:
+ *                   type: string
+ *                 votou:
+ *                   type: boolean
+ *             example:
+ *               nome: Marcio
+ *               login: "123456"
+ *               senha: novaSenha123
+ *               votou: false
  *       400:
  *         description: Erro de validação dos dados enviados.
  *       401:
@@ -244,7 +259,7 @@ router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
 
 /**
  * @swagger
- * /api/usuario:
+ * /api/usuario/{id}:
  *   delete:
  *     summary: Exclui um eleitor
  *     description: Remove permanentemente um eleitor identificado pelo ID.
@@ -280,6 +295,6 @@ router.put('/:id', autenticar, apenasChefe, usuarioController.atualizarUsuario);
  *       500:
  *         description: Erro interno do servidor.
  */
-router.delete('/', autenticar, apenasChefe, usuarioController.excluirUsuario);
+router.delete('/:id', autenticar, apenasChefe, usuarioController.excluirUsuario);
 
 module.exports = router;
