@@ -16,7 +16,7 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  * /api/voto/candidatos/{eleicaoId}/{cargo}:
  *   get:
  *     summary: Consulta candidatos por cargo
- *     description: Retorna os candidatos cadastrados para um dado cargo em uma eleição específica.
+ *     description: Retorna os candidatos cadastrados para um dado cargo em uma eleição específica. Acesso restrito ao Eleitor.
  *     tags: [Votos]
  *     security:
  *       - bearerAuth: []
@@ -24,14 +24,12 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *       - in: path
  *         name: eleicaoId
  *         required: true
- *         description: ID da eleição no MongoDB.
  *         schema:
  *           type: string
  *           example: string
  *       - in: path
  *         name: cargo
  *         required: true
- *         description: Cargo para o qual os candidatos serão consultados.
  *         schema:
  *           type: string
  *           example: Deputado Estadual
@@ -65,6 +63,10 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *         description: Eleição ou cargo inválido.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Acesso restrito aos eleitores.
+ *       404:
+ *         description: Eleição não encontrada.
  *       500:
  *         description: Erro interno ao consultar candidatos.
  */
@@ -77,7 +79,7 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoContr
  * /api/voto:
  *   post:
  *     summary: Registra e confirma um voto
- *     description: Registra o voto de um eleitor para determinado cargo em uma eleição. O sistema verifica se a eleição está aberta, se o candidato pertence ao cargo e à eleição informados e se o eleitor ainda não votou naquele cargo.
+ *     description: Registra o voto sigiloso de um eleitor para determinado cargo em uma eleição aberta (apenas 1 voto por cargo).
  *     tags: [Votos]
  *     security:
  *       - bearerAuth: []
@@ -101,7 +103,6 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoContr
  *               numCandidato:
  *                 type: integer
  *                 example: 50
- *                 description: Número do candidato escolhido.
  *     responses:
  *       201:
  *         description: Voto confirmado com sucesso.
@@ -132,8 +133,8 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  * @swagger
  * /api/voto/acompanhamento/{eleicaoId}:
  *   get:
- *     summary: Acompanha a votação
- *     description: Retorna a quantidade de votos de cada candidato durante uma eleição. Eleitores podem acompanhar todos os cargos, enquanto candidatos visualizam somente o cargo ao qual concorrem.
+ *     summary: Acompanha a votação em andamento
+ *     description: Retorna a quantidade de votos de cada candidato enquanto a eleição estiver ABERTA. Eleitores acompanham todos os cargos; candidatos visualizam somente o cargo e a eleição aos quais concorrem.
  *     tags: [Votos]
  *     security:
  *       - bearerAuth: []
@@ -141,7 +142,6 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *       - in: path
  *         name: eleicaoId
  *         required: true
- *         description: ID da eleição que será acompanhada.
  *         schema:
  *           type: string
  *           example: string
@@ -243,6 +243,8 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *         description: Acompanhamento disponível apenas com a eleição ABERTA.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Candidato tentando acompanhar outra eleição.
  *       404:
  *         description: Eleição não encontrada.
  *       500:
@@ -256,7 +258,7 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  * /api/voto/resultado/{eleicaoId}:
  *   get:
  *     summary: Consulta o resultado final da eleição
- *     description: Retorna a quantidade de votos de cada candidato e identifica o mais votado por cargo. O resultado somente pode ser consultado depois que a eleição estiver encerrada.
+ *     description: Retorna a quantidade de votos de cada candidato e identifica o mais votado por cargo após o encerramento da eleição.
  *     tags: [Votos]
  *     security:
  *       - bearerAuth: []
@@ -264,7 +266,6 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *       - in: path
  *         name: eleicaoId
  *         required: true
- *         description: ID da eleição cujo resultado será consultado.
  *         schema:
  *           type: string
  *           example: string

@@ -1,9 +1,23 @@
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 const Chefe = require('../models/Chefe');
 const Candidato = require('../models/Candidato');
 const { JWT_SECRET } = require('../middlewares/auth.middleware');
+
+async function loginJaExiste(login, ignorarUsuarioId = null) {
+  const loginTrim = login.trim();
+  const [emChefe, emCandidato, emUsuario] = await Promise.all([
+    Chefe.exists({ login: loginTrim }),
+    Candidato.exists({ login: loginTrim }),
+    Usuario.exists({
+      login: loginTrim,
+      ...(ignorarUsuarioId ? { _id: { $ne: ignorarUsuarioId } } : {})
+    })
+  ]);
+  return Boolean(emChefe || emCandidato || emUsuario);
+}
 
 // REQUISITO 1: Login unificado (Chefe, Eleitor ou Candidato)
 exports.login = async (req, res) => {
@@ -17,30 +31,17 @@ exports.login = async (req, res) => {
     let conta = null;
     let perfil = null;
 
-    // 1. Procura nos Chefes de Seção (campo 'login')
     conta = await Chefe.findOne({ login: codigoAcesso }).select('+senha');
-    if (conta) {
-      perfil = 'CHEFE';
-    }
+    if (conta) perfil = 'CHEFE';
 
-    // 2. Se não achar, procura nos Eleitores/Usuarios (campo 'login')
     if (!conta) {
       conta = await Usuario.findOne({ login: codigoAcesso }).select('+senha');
       if (conta) perfil = 'ELEITOR';
     }
 
-    /*
-    // 3. Se não achar e o código for numérico, procura nos Candidatos (campo 'numero')
-    if (!conta && !isNaN(Number(codigoAcesso))) {
-      conta = await Candidato.findOne({ numero: Number(codigoAcesso) }).select('+senha');
-      if (conta) perfil = 'CANDIDATO';
-    }
-    */
-
-    // 2. Se não achar, procura nos Candidator (campo 'login')
-    if(!conta) {
+    if (!conta) {
       conta = await Candidato.findOne({ login: codigoAcesso }).select('+senha');
-      if(conta) perfil = 'CANDIDATO';
+      if (conta) perfil = 'CANDIDATO';
     }
 
     if (!conta) {
@@ -81,9 +82,14 @@ exports.cadastrarUsuario = async (req, res) => {
   try {
     const { nome, login, senha } = req.body;
 
-    // Verifica se a senha é uma string vazia
-    if(senha == "")
-      return res.status(400).json({ erro: "Senha é um campo obrigatório" });
+    if (!senha || typeof senha !== 'string' || senha.trim() === '') {
+      return res.status(400).json({ erro: 'Senha é um campo obrigatório.' });
+    }
+
+    if (login && (await loginJaExiste(login))) {
+      return res.status(400).json({ erro: 'Este login já está em uso no sistema.' });
+    }
+
     const senhaHash = await bcrypt.hash(senha, 10);
 
     const novoUsuario = new Usuario({
@@ -110,18 +116,29 @@ exports.listarUsuarios = async (req, res) => {
     const usuarios = await Usuario.find();
     return res.status(200).json(usuarios);
   } catch (error) {
-    return res.status(500).json({ erro: 'Erro ao buscar usuários' });
+    return res.status(500).json({ erro: 'Erro ao buscar usuários.' });
   }
 };
 
 // REQUISITO 3: Alterar dados de um Eleitor
 exports.atualizarUsuario = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ erro: 'ID de eleitor inválido.' });
+    }
+
     const dados = { ...req.body };
     delete dados.participacoes;
     delete dados.votou;
 
-    if (dados.senha) {
+    if (dados.login && (await loginJaExiste(dados.login, req.params.id))) {
+      return res.status(400).json({ erro: 'Este login já está em uso no sistema.' });
+    }
+
+    if (dados.senha !== undefined) {
+      if (typeof dados.senha !== 'string' || dados.senha.trim() === '') {
+        return res.status(400).json({ erro: 'A senha não pode ser vazia.' });
+      }
       dados.senha = await bcrypt.hash(dados.senha, 10);
     }
 
@@ -142,6 +159,10 @@ exports.atualizarUsuario = async (req, res) => {
 // REQUISITO 3: Excluir Eleitor
 exports.excluirUsuario = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ erro: 'ID de eleitor inválido.' });
+    }
+
     const removido = await Usuario.findByIdAndDelete(req.params.id);
     if (!removido) {
       return res.status(404).json({ erro: 'Eleitor não encontrado.' });

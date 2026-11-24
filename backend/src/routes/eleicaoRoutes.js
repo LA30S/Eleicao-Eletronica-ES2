@@ -16,7 +16,7 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  * /api/eleicao:
  *   get:
  *     summary: Lista todas as eleições
- *     description: Retorna todas as eleições cadastradas no sistema. É necessário estar autenticado para realizar a consulta.
+ *     description: Retorna todas as eleições cadastradas no sistema. Acesso restrito ao Chefe da Seção.
  *     tags: [Eleições]
  *     security:
  *       - bearerAuth: []
@@ -59,7 +59,7 @@ router.get('/', autenticar, apenasChefe, eleicaoController.listarEleicoes);
  * /api/eleicao/{id}:
  *   get:
  *     summary: Consulta uma eleição específica
- *     description: Busca uma eleição pelo seu ID e retorna seus dados, incluindo a situação atual.
+ *     description: Busca uma eleição pelo seu ID e retorna seus dados, incluindo a situação atual. Acesso restrito ao Chefe da Seção.
  *     tags: [Eleições]
  *     security:
  *       - bearerAuth: []
@@ -78,14 +78,18 @@ router.get('/', autenticar, apenasChefe, eleicaoController.listarEleicoes);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Eleicao'
+ *       400:
+ *         description: ID de eleição inválido.
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
+ *       403:
+ *         description: Acesso restrito ao Chefe da Seção.
  *       404:
  *         description: Eleição não encontrada.
  *       500:
  *         description: Erro interno ao consultar a eleição.
  */
-router.get('/:id', autenticar, eleicaoController.consultarSituacao);
+router.get('/:id', autenticar, apenasChefe, eleicaoController.consultarSituacao);
 
 /**
  * @swagger

@@ -1,9 +1,25 @@
+const mongoose = require('mongoose');
 const Eleicao = require('../models/Eleicao');
 
-// Cadastrar eleição (sempre inicia AGENDADA)
+const HORA_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+// REQUISITO 2: Cadastrar eleição (sempre inicia AGENDADA)
 exports.cadastrarEleicao = async (req, res) => {
   try {
     const { data, turno, abertura, encerramento } = req.body;
+
+    if (!data || !turno || !abertura || !encerramento) {
+      return res.status(400).json({ erro: 'Data, turno, horário de abertura e horário de encerramento são obrigatórios.' });
+    }
+
+    if (!HORA_REGEX.test(abertura) || !HORA_REGEX.test(encerramento)) {
+      return res.status(400).json({ erro: 'Os horários de abertura e encerramento devem estar no formato HH:MM.' });
+    }
+
+    if (encerramento <= abertura) {
+      return res.status(400).json({ erro: 'O horário de encerramento deve ser posterior ao horário de abertura.' });
+    }
+
     const novaEleicao = new Eleicao({
       data,
       turno,
@@ -18,7 +34,7 @@ exports.cadastrarEleicao = async (req, res) => {
   }
 };
 
-// Consultar eleições / situação atual
+// REQUISITO 2: Consultar eleições
 exports.listarEleicoes = async (req, res) => {
   try {
     const eleicoes = await Eleicao.find();
@@ -28,8 +44,13 @@ exports.listarEleicoes = async (req, res) => {
   }
 };
 
+// REQUISITO 2: Consultar situação atual da eleição
 exports.consultarSituacao = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ erro: 'ID de eleição inválido.' });
+    }
+
     const eleicao = await Eleicao.findById(req.params.id);
     if (!eleicao) return res.status(404).json({ erro: 'Eleição não encontrada.' });
     return res.status(200).json(eleicao);
@@ -38,9 +59,13 @@ exports.consultarSituacao = async (req, res) => {
   }
 };
 
-// Abrir votação (AGENDADA -> ABERTA)
+// REQUISITO 2: Abrir votação (AGENDADA -> ABERTA)
 exports.abrirEleicao = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ erro: 'ID de eleição inválido.' });
+    }
+
     const eleicao = await Eleicao.findById(req.params.id);
     if (!eleicao) return res.status(404).json({ erro: 'Eleição não encontrada.' });
 
@@ -56,9 +81,13 @@ exports.abrirEleicao = async (req, res) => {
   }
 };
 
-// Encerrar votação (ABERTA -> ENCERRADA)
+// REQUISITO 2: Encerrar votação (ABERTA -> ENCERRADA)
 exports.encerrarEleicao = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ erro: 'ID de eleição inválido.' });
+    }
+
     const eleicao = await Eleicao.findById(req.params.id);
     if (!eleicao) return res.status(404).json({ erro: 'Eleição não encontrada.' });
 
