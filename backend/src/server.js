@@ -27,6 +27,10 @@ app.get('/api', (req, res) => {
   res.json({ message: 'API funcionando!' });
 });
 
+app.get('/api/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json'); res.send(swaggerSpec);
+});
+
 app.use('/api/candidatos', candidatoRoutes);
 app.use('/api/chefe', chefeRoutes);
 app.use('/api/eleicao', eleicaoRoutes);

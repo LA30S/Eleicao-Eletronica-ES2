@@ -10,6 +10,7 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *   description: Operações de votação, acompanhamento e consulta de resultados
  */
 
+
 /**
  * @swagger
  * /api/voto/candidatos/{eleicaoId}/{cargo}:
@@ -26,14 +27,14 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *         description: ID da eleição no MongoDB.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *       - in: path
  *         name: cargo
  *         required: true
  *         description: Cargo para o qual os candidatos serão consultados.
  *         schema:
  *           type: string
- *           example: Governador
+ *           example: Deputado Estadual
  *     responses:
  *       200:
  *         description: Lista de candidatos retornada com sucesso.
@@ -42,13 +43,42 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *             schema:
  *               type: array
  *               items:
+<<<<<<< Updated upstream
  *                 $ref: '#/components/schemas/Candidato'
+=======
+ *                 type: object
+ *             example:
+ *               - _id: "string"
+ *                 nome: Fábio
+ *                 numero: 15
+ *                 login: "1109"
+ *                 cargo: Deputado Estadual
+ *                 partido: Partido Exemplar
+ *                 eleicao: "string"
+ *                 __v: 0
+ *               - _id: "string"
+ *                 nome: Bernardo
+ *                 numero: 18
+ *                 login: "11009"
+ *                 cargo: Deputado Estadual
+ *                 partido: Partido Ambíguo
+ *                 eleicao: "string"
+ *                 __v: 0
+ *       400:
+ *         description: Eleição ou cargo inválido.
+>>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       500:
  *         description: Erro interno ao consultar candidatos.
  */
+<<<<<<< Updated upstream
 router.get('/candidatos/:eleicaoId/:cargo', autenticar, votoController.candidatosPorCargo);
+=======
+
+router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoController.candidatosPorCargo);
+>>>>>>> Stashed changes
+
 
 /**
  * @swagger
@@ -72,8 +102,12 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, votoController.candidato
  *             properties:
  *               eleicaoId:
  *                 type: string
+<<<<<<< Updated upstream
  *                 example: 674abc123456789
  *                 description: ID da eleição em que o voto será registrado.
+=======
+ *                 example: string
+>>>>>>> Stashed changes
  *               cargo:
  *                 type: string
  *                 example: Presidente da República
@@ -91,7 +125,12 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, votoController.candidato
  *               properties:
  *                 mensagem:
  *                   type: string
+<<<<<<< Updated upstream
  *                   example: Voto confirmado com sucesso para Presidente da República.
+=======
+ *             example:
+ *               mensagem: "Voto confirmado com sucesso para Presidente da República."
+>>>>>>> Stashed changes
  *       400:
  *         description: Votação bloqueada ou eleitor já votou para o cargo informado.
  *       401:
@@ -104,6 +143,7 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, votoController.candidato
  *         description: Erro interno ao registrar o voto.
  */
 router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
+
 
 /**
  * @swagger
@@ -121,7 +161,7 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *         description: ID da eleição que será acompanhada.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Dados de acompanhamento retornados com sucesso.
@@ -132,10 +172,15 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *               properties:
  *                 eleicaoId:
  *                   type: string
+<<<<<<< Updated upstream
  *                   example: 674abc123456789
  *                 situacao:
  *                   type: string
  *                   enum: [AGENDADA, ABERTA, ENCERRADA]
+=======
+ *                 situacao:
+ *                   type: string
+>>>>>>> Stashed changes
  *                   example: ABERTA
  *                 evolucao:
  *                   type: array
@@ -144,6 +189,7 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *                     properties:
  *                       candidatoId:
  *                         type: string
+<<<<<<< Updated upstream
  *                         example: 674abc987654321
  *                       nome:
  *                         type: string
@@ -160,6 +206,84 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *                       votos:
  *                         type: integer
  *                         example: 150
+=======
+ *                       nome:
+ *                         type: string
+ *                       numero:
+ *                         type: integer
+ *                       partido:
+ *                         type: string
+ *                       cargo:
+ *                         type: string
+ *                       votos:
+ *                         type: integer
+ *             example:
+ *               eleicaoId: "string"
+ *               situacao: ABERTA
+ *               evolucao:
+ *                 - candidatoId: "string"
+ *                   nome: Fábio
+ *                   numero: 15
+ *                   partido: Partido Exemplar
+ *                   cargo: Deputado Estadual
+ *                   votos: 1
+ *                 - candidatoId: "string"
+ *                   nome: Rogéria
+ *                   numero: 158
+ *                   partido: Partido Ambíguo
+ *                   cargo: Deputado Federal
+ *                   votos: 1
+ *                 - candidatoId: "string"
+ *                   nome: Luisa
+ *                   numero: 1518
+ *                   partido: Partido Ambíguo
+ *                   cargo: Governador
+ *                   votos: 1
+ *                 - candidatoId: "string"
+ *                   nome: Fabricio
+ *                   numero: 151980
+ *                   partido: Partido Exemplar
+ *                   cargo: Presidente da República
+ *                   votos: 1
+ *                 - candidatoId: "string"
+ *                   nome: Marco
+ *                   numero: 15148
+ *                   partido: Partido Exemplar
+ *                   cargo: Senador
+ *                   votos: 1
+ *                 - candidatoId: "string"
+ *                   nome: Bernardo
+ *                   numero: 18
+ *                   partido: Partido Ambíguo
+ *                   cargo: Deputado Estadual
+ *                   votos: 0
+ *                 - candidatoId: "string"
+ *                   nome: Cleber
+ *                   numero: 152
+ *                   partido: Partido Exemplar
+ *                   cargo: Deputado Federal
+ *                   votos: 0
+ *                 - candidatoId: "string"
+ *                   nome: Reginaldo
+ *                   numero: 1548
+ *                   partido: Partido Exemplar
+ *                   cargo: Governador
+ *                   votos: 0
+ *                 - candidatoId: "string"
+ *                   nome: Clotilde
+ *                   numero: 151280
+ *                   partido: Partido Ambíguo
+ *                   cargo: Presidente da República
+ *                   votos: 0
+ *                 - candidatoId: "string"
+ *                   nome: Cláudia
+ *                   numero: 15198
+ *                   partido: Partido Ambíguo
+ *                   cargo: Senador
+ *                   votos: 0
+ *       400:
+ *         description: Acompanhamento disponível apenas com a eleição ABERTA.
+>>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       404:
@@ -168,6 +292,7 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *         description: Erro interno ao acompanhar a votação.
  */
 router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVotacao);
+
 
 /**
  * @swagger
@@ -185,7 +310,7 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *         description: ID da eleição cujo resultado será consultado.
  *         schema:
  *           type: string
- *           example: 674abc123456789
+ *           example: string
  *     responses:
  *       200:
  *         description: Resultado final da eleição.
@@ -206,6 +331,7 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *                       type: integer
  *                     situacao:
  *                       type: string
+<<<<<<< Updated upstream
  *                 resultados:
  *                   type: object
  *             example:
@@ -241,6 +367,191 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *                     partido: "Partido Ambíguo"
  *                     cargo: "Governador"
  *                     votos: 100
+=======
+ *                       example: ENCERRADA
+ *                 resultados:
+ *                   type: object
+ *                   additionalProperties:
+ *                     type: object
+ *                     properties:
+ *                       candidatos:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nome:
+ *                               type: string
+ *                             numero:
+ *                               type: integer
+ *                             partido:
+ *                               type: string
+ *                             cargo:
+ *                               type: string
+ *                             votos:
+ *                               type: integer
+ *                       maisVotado:
+ *                         type: object
+ *                         properties:
+ *                           nome:
+ *                             type: string
+ *                           numero:
+ *                             type: integer
+ *                           partido:
+ *                             type: string
+ *                           cargo:
+ *                             type: string
+ *                           votos:
+ *                             type: integer
+ *                       maisVotados:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nome:
+ *                               type: string
+ *                             numero:
+ *                               type: integer
+ *                             partido:
+ *                               type: string
+ *                             cargo:
+ *                               type: string
+ *                             votos:
+ *                               type: integer
+ *                       empate:
+ *                         type: boolean
+ *             example:
+ *               eleicao:
+ *                 id: "string"
+ *                 data: "2026-11-23T00:00:00.000Z"
+ *                 turno: 1
+ *                 situacao: ENCERRADA
+ *               resultados:
+ *                 Deputado Estadual:
+ *                   candidatos:
+ *                     - nome: Fábio
+ *                       numero: 15
+ *                       partido: Partido Exemplar
+ *                       cargo: Deputado Estadual
+ *                       votos: 1
+ *                     - nome: Bernardo
+ *                       numero: 18
+ *                       partido: Partido Ambíguo
+ *                       cargo: Deputado Estadual
+ *                       votos: 0
+ *                   maisVotado:
+ *                     nome: Fábio
+ *                     numero: 15
+ *                     partido: Partido Exemplar
+ *                     cargo: Deputado Estadual
+ *                     votos: 1
+ *                   maisVotados:
+ *                     - nome: Fábio
+ *                       numero: 15
+ *                       partido: Partido Exemplar
+ *                       cargo: Deputado Estadual
+ *                       votos: 1
+ *                   empate: false
+ *                 Deputado Federal:
+ *                   candidatos:
+ *                     - nome: Rogéria
+ *                       numero: 158
+ *                       partido: Partido Ambíguo
+ *                       cargo: Deputado Federal
+ *                       votos: 1
+ *                     - nome: Cleber
+ *                       numero: 152
+ *                       partido: Partido Exemplar
+ *                       cargo: Deputado Federal
+ *                       votos: 0
+ *                   maisVotado:
+ *                     nome: Rogéria
+ *                     numero: 158
+ *                     partido: Partido Ambíguo
+ *                     cargo: Deputado Federal
+ *                     votos: 1
+ *                   maisVotados:
+ *                     - nome: Rogéria
+ *                       numero: 158
+ *                       partido: Partido Ambíguo
+ *                       cargo: Deputado Federal
+ *                       votos: 1
+ *                   empate: false
+ *                 Governador:
+ *                   candidatos:
+ *                     - nome: Luisa
+ *                       numero: 1518
+ *                       partido: Partido Ambíguo
+ *                       cargo: Governador
+ *                       votos: 1
+ *                     - nome: Reginaldo
+ *                       numero: 1548
+ *                       partido: Partido Exemplar
+ *                       cargo: Governador
+ *                       votos: 0
+ *                   maisVotado:
+ *                     nome: Luisa
+ *                     numero: 1518
+ *                     partido: Partido Ambíguo
+ *                     cargo: Governador
+ *                     votos: 1
+ *                   maisVotados:
+ *                     - nome: Luisa
+ *                       numero: 1518
+ *                       partido: Partido Ambíguo
+ *                       cargo: Governador
+ *                       votos: 1
+ *                   empate: false
+ *                 Presidente da República:
+ *                   candidatos:
+ *                     - nome: Fabricio
+ *                       numero: 151980
+ *                       partido: Partido Exemplar
+ *                       cargo: Presidente da República
+ *                       votos: 1
+ *                     - nome: Clotilde
+ *                       numero: 151280
+ *                       partido: Partido Ambíguo
+ *                       cargo: Presidente da República
+ *                       votos: 0
+ *                   maisVotado:
+ *                     nome: Fabricio
+ *                     numero: 151980
+ *                     partido: Partido Exemplar
+ *                     cargo: Presidente da República
+ *                     votos: 1
+ *                   maisVotados:
+ *                     - nome: Fabricio
+ *                       numero: 151980
+ *                       partido: Partido Exemplar
+ *                       cargo: Presidente da República
+ *                       votos: 1
+ *                   empate: false
+ *                 Senador:
+ *                   candidatos:
+ *                     - nome: Marco
+ *                       numero: 15148
+ *                       partido: Partido Exemplar
+ *                       cargo: Senador
+ *                       votos: 1
+ *                     - nome: Cláudia
+ *                       numero: 15198
+ *                       partido: Partido Ambíguo
+ *                       cargo: Senador
+ *                       votos: 0
+ *                   maisVotado:
+ *                     nome: Marco
+ *                     numero: 15148
+ *                     partido: Partido Exemplar
+ *                     cargo: Senador
+ *                     votos: 1
+ *                   maisVotados:
+ *                     - nome: Marco
+ *                       numero: 15148
+ *                       partido: Partido Exemplar
+ *                       cargo: Senador
+ *                       votos: 1
+ *                   empate: false
+>>>>>>> Stashed changes
  *       400:
  *         description: O resultado final só pode ser consultado após o encerramento da eleição.
  *       401:
