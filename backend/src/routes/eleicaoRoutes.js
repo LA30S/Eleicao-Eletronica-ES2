@@ -29,12 +29,6 @@ const { autenticar, apenasChefe } = require('../middlewares/auth.middleware');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Eleicao'
-<<<<<<< Updated upstream
- *       500:
- *         description: Erro interno ao buscar as eleições.
- */
-router.get('/', autenticar, eleicaoController.listarEleicoes);
-=======
  *             example:
  *               - _id: "string"
  *                 data: "2026-11-23T00:00:00.000Z"
@@ -59,7 +53,6 @@ router.get('/', autenticar, eleicaoController.listarEleicoes);
  */
 
 router.get('/', autenticar, apenasChefe, eleicaoController.listarEleicoes);
->>>>>>> Stashed changes
 
 /**
  * @swagger
@@ -153,31 +146,6 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *               properties:
  *                 mensagem:
  *                   type: string
-<<<<<<< Updated upstream
- *                   example: Eleição ABERTA com sucesso.
- *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ABERTA
-=======
  *                 eleicao:
  *                   $ref: '#/components/schemas/Eleicao'
  *             example:
@@ -190,7 +158,6 @@ router.post('/', autenticar, apenasChefe, eleicaoController.cadastrarEleicao);
  *                 encerramento: "17:00"
  *                 situacao: "ABERTA"
  *                 __v: 0
->>>>>>> Stashed changes
  *       400:
  *         description: A eleição não pode ser aberta porque não está AGENDADA.
  *       401:
@@ -232,31 +199,6 @@ router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleic
  *               properties:
  *                 mensagem:
  *                   type: string
-<<<<<<< Updated upstream
- *                   example: Eleição ENCERRADA com sucesso.
- *                 eleicao:
- *                   type: object
- *                   properties:
- *                      id:
- *                          type: string
- *                          example: 674abc123456789
- *                      data:
- *                          type: string
- *                          format: date-time
- *                          example: 2026-11-20T00:00:00.000Z
- *                      turno:
- *                          type: integer
- *                          example: 1
- *                      abertura:
- *                          type: string
- *                          example: 08:00
- *                      encerramento:
- *                          type: string
- *                          example: 17:00
- *                      situacao:
- *                          type: string
- *                          example: ENCERRADA
-=======
  *                 eleicao:
  *                   $ref: '#/components/schemas/Eleicao'
  *             example:
@@ -269,7 +211,6 @@ router.patch('/:id/abrir', autenticar, apenasChefe, eleicaoController.abrirEleic
  *                 encerramento: "17:00"
  *                 situacao: "ENCERRADA"
  *                 __v: 0
->>>>>>> Stashed changes
  *       400:
  *         description: Somente eleições ABERTAS podem ser encerradas.
  *       401:

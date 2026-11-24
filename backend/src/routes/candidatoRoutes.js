@@ -42,11 +42,7 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *                 example: 15148
  *               login:
  *                 type: string
-<<<<<<< Updated upstream
- *                 example: 98765
-=======
  *                 example: "1104417"
->>>>>>> Stashed changes
  *               senha:
  *                 type: string
  *                 example: senha123
@@ -64,8 +60,6 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               partido:
  *                 type: string
  *                 example: Partido Exemplar
-<<<<<<< Updated upstream
-=======
  *               eleicao:
  *                 type: string
  *                 example: "string"
@@ -77,16 +71,12 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *             cargo: Senador
  *             partido: Partido Exemplar
  *             eleicao: "string"
->>>>>>> Stashed changes
  *     responses:
  *       201:
  *         description: Candidato cadastrado com sucesso.
  *         content:
  *           application/json:
  *             schema:
-<<<<<<< Updated upstream
- *               $ref: '#/components/schemas/Candidato'
-=======
  *               type: object
  *               properties:
  *                 nome:
@@ -114,7 +104,6 @@ const { autenticar, apenasEleitor , apenasChefe} = require('../middlewares/auth.
  *               eleicao: "string"
  *               _id: "string"
  *               __v: 0
->>>>>>> Stashed changes
  *       400:
  *         description: Erro ao cadastrar candidato.
  *       401:
@@ -142,9 +131,6 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *             schema:
  *               type: array
  *               items:
-<<<<<<< Updated upstream
- *                 $ref: '#/components/schemas/Candidato'
-=======
  *                 type: object
  *                 properties:
  *                   _id:
@@ -294,7 +280,6 @@ router.post('/', autenticar, apenasChefe, candidatoController.cadastrarCandidato
  *                   turno: 1
  *                   situacao: "AGENDADA"
  *                 __v: 0
->>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:
@@ -307,8 +292,6 @@ router.get('/', autenticar, apenasChefe, candidatoController.listarCandidatos);
 
 /**
  * @swagger
-<<<<<<< Updated upstream
-=======
  * /api/candidatos/cargo:
  *   get:
  *     summary: Lista candidatos por cargo
@@ -448,7 +431,6 @@ router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCarg
 
 /**
  * @swagger
->>>>>>> Stashed changes
  * /api/candidatos/{id}:
  *   put:
  *     summary: Atualiza os dados de um candidato
@@ -473,24 +455,6 @@ router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCarg
  *             properties:
  *               nome:
  *                 type: string
-<<<<<<< Updated upstream
- *                 example: João da Silva
- *               numero:
- *                 type: integer
- *                 example: 123
- *               login:
- *                 type: string
- *                 example: joao123
- *               senha:
- *                 type: string
- *                 example: novaSenha123
- *               cargo:
- *                 type: string
- *                 example: Governador
- *               partido:
- *                 type: string
- *                 example: Partido Exemplo
-=======
  *                 example: Clotilde
  *               numero:
  *                 type: integer
@@ -519,7 +483,6 @@ router.get('/mais-votados-cargo', autenticar, candidatoController.listarMaisCarg
  *             cargo: Presidente da República
  *             partido: Partido Exemplar
  *             eleicao: "string"
->>>>>>> Stashed changes
  *     responses:
  *       200:
  *         description: Candidato atualizado com sucesso.
@@ -584,8 +547,6 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  *     responses:
  *       200:
  *         description: Candidato excluído com sucesso.
-<<<<<<< Updated upstream
-=======
  *         content:
  *           application/json:
  *             schema:
@@ -597,7 +558,6 @@ router.put('/:id', autenticar, apenasChefe, candidatoController.atualizarCandida
  *               mensagem: "Candidato excluído com sucesso."
  *       400:
  *         description: Candidato já possui votos ou ID inválido.
->>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       403:

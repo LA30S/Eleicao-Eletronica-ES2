@@ -43,9 +43,6 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *             schema:
  *               type: array
  *               items:
-<<<<<<< Updated upstream
- *                 $ref: '#/components/schemas/Candidato'
-=======
  *                 type: object
  *             example:
  *               - _id: "string"
@@ -66,18 +63,13 @@ const { autenticar, apenasEleitor } = require('../middlewares/auth.middleware');
  *                 __v: 0
  *       400:
  *         description: Eleição ou cargo inválido.
->>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       500:
  *         description: Erro interno ao consultar candidatos.
  */
-<<<<<<< Updated upstream
-router.get('/candidatos/:eleicaoId/:cargo', autenticar, votoController.candidatosPorCargo);
-=======
 
 router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoController.candidatosPorCargo);
->>>>>>> Stashed changes
 
 
 /**
@@ -102,12 +94,7 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoContr
  *             properties:
  *               eleicaoId:
  *                 type: string
-<<<<<<< Updated upstream
- *                 example: 674abc123456789
- *                 description: ID da eleição em que o voto será registrado.
-=======
  *                 example: string
->>>>>>> Stashed changes
  *               cargo:
  *                 type: string
  *                 example: Presidente da República
@@ -125,12 +112,8 @@ router.get('/candidatos/:eleicaoId/:cargo', autenticar, apenasEleitor, votoContr
  *               properties:
  *                 mensagem:
  *                   type: string
-<<<<<<< Updated upstream
- *                   example: Voto confirmado com sucesso para Presidente da República.
-=======
  *             example:
  *               mensagem: "Voto confirmado com sucesso para Presidente da República."
->>>>>>> Stashed changes
  *       400:
  *         description: Votação bloqueada ou eleitor já votou para o cargo informado.
  *       401:
@@ -172,15 +155,8 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *               properties:
  *                 eleicaoId:
  *                   type: string
-<<<<<<< Updated upstream
- *                   example: 674abc123456789
  *                 situacao:
  *                   type: string
- *                   enum: [AGENDADA, ABERTA, ENCERRADA]
-=======
- *                 situacao:
- *                   type: string
->>>>>>> Stashed changes
  *                   example: ABERTA
  *                 evolucao:
  *                   type: array
@@ -189,24 +165,6 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *                     properties:
  *                       candidatoId:
  *                         type: string
-<<<<<<< Updated upstream
- *                         example: 674abc987654321
- *                       nome:
- *                         type: string
- *                         example: Fabricio
- *                       numero:
- *                         type: integer
- *                         example: 50
- *                       partido:
- *                         type: string
- *                         example: Partido Exemplar
- *                       cargo:
- *                         type: string
- *                         example: Presidente da República
- *                       votos:
- *                         type: integer
- *                         example: 150
-=======
  *                       nome:
  *                         type: string
  *                       numero:
@@ -283,7 +241,6 @@ router.post('/', autenticar, apenasEleitor, votoController.registrarVoto);
  *                   votos: 0
  *       400:
  *         description: Acompanhamento disponível apenas com a eleição ABERTA.
->>>>>>> Stashed changes
  *       401:
  *         description: Token de autenticação não fornecido ou inválido.
  *       404:
@@ -331,43 +288,6 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *                       type: integer
  *                     situacao:
  *                       type: string
-<<<<<<< Updated upstream
- *                 resultados:
- *                   type: object
- *             example:
- *               eleicao:
- *                 id: "674abc123456789"
- *                 data: "2026-11-20T00:00:00.000Z"
- *                 turno: 1
- *                 situacao: "ENCERRADA"
- *               resultados:
- *                 "Presidente da República":
- *                   candidatos:
- *                     - nome: "Fabricio"
- *                       numero: 50
- *                       partido: "Partido Exemplar"
- *                       cargo: "Presidente da República"
- *                       votos: 150
- *                   maisVotado:
- *                     nome: "Fabricio"
- *                     numero: 50
- *                     partido: "Partido Exemplar"
- *                     cargo: "Presidente da República"
- *                     votos: 150
- *                 "Governador":
- *                   candidatos:
- *                     - nome: "Luisa"
- *                       numero: 120
- *                       partido: "Partido Ambíguo"
- *                       cargo: "Governador"
- *                       votos: 100
- *                   maisVotado:
- *                     nome: "Luisa"
- *                     numero: 120
- *                     partido: "Partido Ambíguo"
- *                     cargo: "Governador"
- *                     votos: 100
-=======
  *                       example: ENCERRADA
  *                 resultados:
  *                   type: object
@@ -551,7 +471,6 @@ router.get('/acompanhamento/:eleicaoId', autenticar, votoController.acompanharVo
  *                       cargo: Senador
  *                       votos: 1
  *                   empate: false
->>>>>>> Stashed changes
  *       400:
  *         description: O resultado final só pode ser consultado após o encerramento da eleição.
  *       401:
